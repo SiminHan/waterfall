@@ -1,7 +1,47 @@
 window.onload=function(){
 	waterfall('main','box');
+	var dataInt={
+		"data":[
+			{"src":'21.jpg'},
+			{"src":'22.jpg'},
+			{"src":'23.jpg'},
+			{"src":'24.jpg'},
+			{"src":'25.jpg'},
+			{"src":'26.jpg'},
+			{"src":'27.jpg'},
+			{"src":'28.jpg'},
+			{"src":'29.jpg'},
+			{"src":'30.jpg'},
+			{"src":'31.jpg'},
+			{"src":'32.jpg'},
+			{"src":'33.jpg'},
+			{"src":'34.jpg'},
+			{"src":'35.jpg'},
+			{"src":'36.jpg'},
+			{"src":'37.jpg'},
+			{"src":'38.jpg'},
+			{"src":'39.jpg'}
+		]
+	}
 	window.onscroll=function(){
-		
+		if(checkScrollSlide){
+			
+			var oParent=document.getElementById('main');
+			//将数据块渲染到当前页面的尾部
+			for(var i=0;i<dataInt.data.length;i++){
+				var oBox=document.createElement("div");
+				oBox.className='box';
+				oParent.appendChild(oBox);
+				var oPic=document.createElement("div");
+				oPic.className='pic';
+				oBox.appendChild(oPic);
+				var oImg=document.createElement("img");
+				oImg.src='img/'+dataInt.data[i].src;
+				oPic.appendChild(oImg);
+				
+			}
+			waterfall('main','box');
+		}
 	}
 	
 }
@@ -48,6 +88,36 @@ function getMinhIndex(arr,val){
 	for(var i in arr){
 		if(arr[i]==val){
 			return i;
+		}
+	}
+}
+
+//检查是否符合加载数据块的条件
+function checkScrollSlide(){
+	var oParent=document.getElementById('main');
+	var oBoxs=getByClass(oParent,'box');
+	var lastBoxH=oBoxs[oBoxs.length-1].offsetTop+Math.floor(oBoxs[oBoxs.length-1].offsetHeight/2);
+	var scrollTop=document.body.scrollTop||document.documentElement.scrollTop;
+	var height=document.body.clientHeight||document.documentElement.clientHeight;
+	return (lastBoxH<scrollTop+height)?true:false;
+}
+
+function load_pic(){
+	var XHR=new XMLHttpRequest();
+	XHR.open("GET","load_pic.jsp",true);
+	XHR.send();
+	XHR.onreadystatechange=function(){
+		if(XHR.readyState===4){
+			if(XHR.status===200){
+				var data=JSON.parse(XHR.responseText);
+				if(data.success){
+					document.getElementById("search-container").innerHTML=data.context;
+				}else{
+					alert("发生错误aaaa"+XHR.status);
+				}						
+			}else{
+				alert("发生错误"+XHR.status);
+			}
 		}
 	}
 }
